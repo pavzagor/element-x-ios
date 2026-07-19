@@ -403,6 +403,12 @@ class RoomFlowCoordinator: FlowCoordinatorProtocol {
             case (.room, .presentPinnedEventsTimeline, .pinnedEventsTimeline):
                 startPinnedEventsTimelineFlow()
                 
+            case (.room, .presentMessageSearch, .messageSearch):
+                presentMessageSearch(animated: animated)
+            case (.messageSearch, .displayMessageSearchResult(let eventID), .room):
+                navigationStackCoordinator.pop(animated: animated)
+                handleChildEventRoute(eventID: eventID, roomID: roomProxy.id, via: [], animated: false)
+                
             // Thread List
                 
             case (.room, .presentThreadList, .threadList):
@@ -739,6 +745,8 @@ class RoomFlowCoordinator: FlowCoordinatorProtocol {
                     stateMachine.tryEvent(.presentKnockRequestsListScreen)
                 case .presentThreadList:
                     stateMachine.tryEvent(.presentThreadList, userInfo: EventUserInfo(animated: animated))
+                case .presentMessageSearch:
+                    stateMachine.tryEvent(.presentMessageSearch, userInfo: EventUserInfo(animated: animated))
                 case .presentThread(let threadRootEventID, let focussedEventID):
                     stateMachine.tryEvent(.presentThread(threadRootEventID: threadRootEventID, focusEventID: focussedEventID))
                 case .presentRoom(let roomID, let via):
@@ -767,6 +775,29 @@ class RoomFlowCoordinator: FlowCoordinatorProtocol {
         navigationStackCoordinator.push(coordinator, animated: animated) { [weak self] in
             guard let self else { return }
             stateMachine.tryEvent(.dismissThreadList)
+        }
+    }
+    
+    private func presentMessageSearch(animated: Bool) {
+        let coordinator = RoomMessageSearchScreenCoordinator(parameters: .init(roomProxy: roomProxy,
+                                                                               mediaProvider: userSession.mediaProvider))
+        
+        coordinator.actionsPublisher.sink { [weak self] action in
+            guard let self else { return }
+            
+            switch action {
+            case .dismiss:
+                navigationStackCoordinator.pop(animated: animated)
+            case .displayEvent(let eventID):
+                stateMachine.tryEvent(.displayMessageSearchResult(eventID: eventID),
+                                      userInfo: EventUserInfo(animated: animated))
+            }
+        }
+        .store(in: &cancellables)
+        
+        navigationStackCoordinator.push(coordinator, animated: animated) { [weak self] in
+            guard let self, case .messageSearch = stateMachine.state else { return }
+            stateMachine.tryEvent(.dismissMessageSearch)
         }
     }
     

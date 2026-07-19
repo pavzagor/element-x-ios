@@ -9,6 +9,7 @@
 import Combine
 @testable import ElementX
 import MatrixRustSDKMocks
+import SwiftState
 import Testing
 
 @MainActor
@@ -226,6 +227,36 @@ final class RoomFlowCoordinatorTests {
         try await process(route: .childEvent(eventID: "3", roomID: "2", via: []), expectedStackCount: 1)
         #expect(navigationStackCoordinator.rootCoordinator is RoomScreenCoordinator)
         #expect(navigationStackCoordinator.stackCoordinators.first is RoomScreenCoordinator)
+    }
+    
+    @Test
+    func messageSearchStateMapping() {
+        setupRoomFlowCoordinator()
+        
+        let stateMachine: StateMachine<RoomFlowCoordinator.State, RoomFlowCoordinator.Event> = .init(state: .room)
+        roomFlowCoordinator.addRouteMapping(stateMachine: stateMachine)
+        
+        stateMachine.tryEvent(.presentMessageSearch)
+        
+        guard case .messageSearch(previousState: .room) = stateMachine.state else {
+            Issue.record("Expected message search to be pushed from the room state.")
+            return
+        }
+        
+        stateMachine.tryEvent(.displayMessageSearchResult(eventID: "$event"))
+        
+        guard case .room = stateMachine.state else {
+            Issue.record("Expected message search result selection to return to the room state.")
+            return
+        }
+        
+        stateMachine.tryEvent(.presentMessageSearch)
+        stateMachine.tryEvent(.dismissMessageSearch)
+        
+        guard case .room = stateMachine.state else {
+            Issue.record("Expected message search dismissal to return to the room state.")
+            return
+        }
     }
     
     @Test

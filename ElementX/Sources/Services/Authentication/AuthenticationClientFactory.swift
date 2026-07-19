@@ -39,8 +39,7 @@ struct AuthenticationClientFactory: AuthenticationClientFactoryProtocol {
                          appHooks: appHooks,
                          enableOnlySignedDeviceIsolationMode: appSettings.enableOnlySignedDeviceIsolationMode,
                          threadsEnabled: appSettings.threadsEnabled)
-            .sqliteStore(config: .init(dataPath: sessionDirectories.dataPath, cachePath: sessionDirectories.cachePath)
-                .passphrase(passphrase: passphrase))
+            .persistentStores(sessionDirectories: sessionDirectories, passphrase: passphrase)
             .serverNameOrHomeserverUrl(serverNameOrUrl: homeserverAddress)
             .build()
     }

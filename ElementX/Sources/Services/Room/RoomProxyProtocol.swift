@@ -101,6 +101,8 @@ protocol JoinedRoomProxyProtocol: RoomProxyProtocol {
     
     func threadListService() -> RoomThreadListServiceProxyProtocol
     
+    func messageSearchProxy(query: String) -> RoomMessageSearchProxyProtocol
+    
     func loadOrFetchEventDetails(for eventID: String) async -> Result<TimelineEvent, RoomProxyError>
     
     func messageFilteredTimeline(focus: TimelineFocus,

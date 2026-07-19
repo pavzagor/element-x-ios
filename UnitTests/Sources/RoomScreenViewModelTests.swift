@@ -225,6 +225,27 @@ final class RoomScreenViewModelTests {
     }
     
     @Test
+    func messageSearchAction() async throws {
+        let viewModel = RoomScreenViewModel(userSession: UserSessionMock(.init()),
+                                            roomProxy: JoinedRoomProxyMock(.init()),
+                                            initialSelectedPinnedEventID: nil,
+                                            ongoingCallRoomIDPublisher: .init(.init(nil)),
+                                            appSettings: appSettings,
+                                            appHooks: AppHooks(),
+                                            analyticsService: AnalyticsServiceMock(.init()),
+                                            userIndicatorController: UserIndicatorControllerMock())
+        self.viewModel = viewModel
+        
+        let deferred = deferFulfillment(viewModel.actions) { action in
+            action == .displayMessageSearch
+        }
+        
+        viewModel.context.send(viewAction: .displayMessageSearch)
+        
+        try await deferred.fulfill()
+    }
+    
+    @Test
     func roomInfoUpdate() async throws {
         var configuration = JoinedRoomProxyMockConfiguration(id: "TestID", name: "StartingName", avatarURL: nil, hasOngoingCall: false)
         let roomProxyMock = JoinedRoomProxyMock(configuration)

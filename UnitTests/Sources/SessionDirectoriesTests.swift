@@ -39,10 +39,12 @@ struct SessionDirectoriesTests {
         // When getting the paths from the session directories struct.
         let returnedDataPath = sessionDirectories.dataPath
         let returnedCachePath = sessionDirectories.cachePath
+        let returnedSearchIndexPath = sessionDirectories.searchIndexPath
         
         // Then the paths should not be escaped.
         #expect(returnedDataPath == originalDataPath)
         #expect(returnedCachePath == originalCachePath)
+        #expect(returnedSearchIndexPath == originalDataPath + "/matrix-sdk-search-index")
     }
     
     @Test

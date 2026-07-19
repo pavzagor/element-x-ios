@@ -63,6 +63,12 @@ nonisolated extension ClientBuilder {
         
         return appHooks.clientBuilderHook.configure(builder)
     }
+    
+    func persistentStores(sessionDirectories: SessionDirectories, passphrase: String) -> ClientBuilder {
+        sqliteStore(config: .init(dataPath: sessionDirectories.dataPath, cachePath: sessionDirectories.cachePath)
+            .passphrase(passphrase: passphrase))
+            .withSearchIndexStore(path: sessionDirectories.searchIndexPath, password: passphrase)
+    }
 }
 
 enum ClientBuilderSlidingSync {

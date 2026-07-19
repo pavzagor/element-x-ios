@@ -137,11 +137,8 @@ class UserSessionStore: UserSessionStoreProtocol {
                          appHooks: appHooks,
                          enableOnlySignedDeviceIsolationMode: appSettings.enableOnlySignedDeviceIsolationMode,
                          threadsEnabled: appSettings.threadsEnabled)
-            .sqliteStore(config: .init(dataPath: credentials.restorationToken.sessionDirectories.dataPath,
-                                       cachePath: credentials.restorationToken.sessionDirectories.cachePath)
-                    .passphrase(passphrase: credentials.restorationToken.passphrase))
-            .withSearchIndexStore(path: credentials.restorationToken.sessionDirectories.dataPath,
-                                  password: credentials.restorationToken.passphrase)
+            .persistentStores(sessionDirectories: credentials.restorationToken.sessionDirectories,
+                              passphrase: credentials.restorationToken.passphrase)
             .username(username: credentials.userID)
             .homeserverUrl(url: homeserverURL)
         

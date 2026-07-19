@@ -77,6 +77,7 @@ extension RoomFlowCoordinator {
         case pollsHistoryForm
         case rolesAndPermissions
         case pinnedEventsTimeline(previousState: State)
+        case messageSearch(previousState: State)
         case resolveSendFailure(previousState: State)
         case knockRequestsList(previousState: State)
         case mediaEventsTimeline(previousState: State)
@@ -166,6 +167,10 @@ extension RoomFlowCoordinator {
         case presentPinnedEventsTimeline
         case dismissPinnedEventsTimeline
         
+        case presentMessageSearch
+        case dismissMessageSearch
+        case displayMessageSearchResult(eventID: String)
+        
         case presentResolveSendFailure(failure: TimelineItemSendFailure.VerifiedUser, sendHandle: SendHandleProxy)
         case dismissResolveSendFailure
         
@@ -239,6 +244,15 @@ extension RoomFlowCoordinator {
                 return .pinnedEventsTimeline(previousState: fromState)
             case (.pinnedEventsTimeline(let previousState), .dismissPinnedEventsTimeline):
                 return previousState
+                
+            // Message Search
+                
+            case (.room, .presentMessageSearch):
+                return .messageSearch(previousState: fromState)
+            case (.messageSearch(let previousState), .dismissMessageSearch):
+                return previousState
+            case (.messageSearch, .displayMessageSearchResult):
+                return .room
                 
             // Thread List
             case (.room, .presentThreadList):

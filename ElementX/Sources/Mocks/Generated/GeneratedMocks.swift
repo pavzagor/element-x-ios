@@ -5285,6 +5285,48 @@ nonisolated class JoinedRoomProxyMock: JoinedRoomProxyProtocol, @unchecked Senda
             return threadListServiceReturnValue
         }
     }
+    //MARK: - messageSearchProxy
+
+    private let messageSearchProxyQueryCallsCountLock = NSLock()
+    private nonisolated(unsafe) var messageSearchProxyQueryUnderlyingCallsCount = 0
+    var messageSearchProxyQueryCallsCount: Int {
+        get { messageSearchProxyQueryCallsCountLock.withLock { messageSearchProxyQueryUnderlyingCallsCount } }
+        set { messageSearchProxyQueryCallsCountLock.withLock { messageSearchProxyQueryUnderlyingCallsCount = newValue } }
+    }
+    var messageSearchProxyQueryCalled: Bool {
+        return messageSearchProxyQueryCallsCount > 0
+    }
+    private let messageSearchProxyQueryReceivedQueryLock = NSLock()
+    private nonisolated(unsafe) var messageSearchProxyQueryUnderlyingReceivedQuery: String?
+    var messageSearchProxyQueryReceivedQuery: String? {
+        get { messageSearchProxyQueryReceivedQueryLock.withLock { messageSearchProxyQueryUnderlyingReceivedQuery } }
+        set { messageSearchProxyQueryReceivedQueryLock.withLock { messageSearchProxyQueryUnderlyingReceivedQuery = newValue } }
+    }
+    private let messageSearchProxyQueryReceivedInvocationsLock = NSLock()
+    private nonisolated(unsafe) var messageSearchProxyQueryUnderlyingReceivedInvocations: [String] = []
+    var messageSearchProxyQueryReceivedInvocations: [String] {
+        get { messageSearchProxyQueryReceivedInvocationsLock.withLock { messageSearchProxyQueryUnderlyingReceivedInvocations } }
+        set { messageSearchProxyQueryReceivedInvocationsLock.withLock { messageSearchProxyQueryUnderlyingReceivedInvocations = newValue } }
+    }
+
+    private let messageSearchProxyQueryReturnValueLock = NSLock()
+    private nonisolated(unsafe) var messageSearchProxyQueryUnderlyingReturnValue: RoomMessageSearchProxyProtocol!
+    var messageSearchProxyQueryReturnValue: RoomMessageSearchProxyProtocol! {
+        get { messageSearchProxyQueryReturnValueLock.withLock { messageSearchProxyQueryUnderlyingReturnValue } }
+        set { messageSearchProxyQueryReturnValueLock.withLock { messageSearchProxyQueryUnderlyingReturnValue = newValue } }
+    }
+    nonisolated(unsafe) var messageSearchProxyQueryClosure: ((String) -> RoomMessageSearchProxyProtocol)?
+
+    func messageSearchProxy(query: String) -> RoomMessageSearchProxyProtocol {
+        messageSearchProxyQueryCallsCountLock.withLock { messageSearchProxyQueryUnderlyingCallsCount += 1 }
+        messageSearchProxyQueryReceivedQuery = query
+        messageSearchProxyQueryReceivedInvocationsLock.withLock { messageSearchProxyQueryUnderlyingReceivedInvocations.append(query) }
+        if let messageSearchProxyQueryClosure = messageSearchProxyQueryClosure {
+            return messageSearchProxyQueryClosure(query)
+        } else {
+            return messageSearchProxyQueryReturnValue
+        }
+    }
     //MARK: - loadOrFetchEventDetails
 
     private let loadOrFetchEventDetailsForCallsCountLock = NSLock()
@@ -10151,6 +10193,37 @@ nonisolated class RoomMembershipDetailsProxyMock: RoomMembershipDetailsProxyProt
     nonisolated(unsafe) var underlyingOwnRoomMember: RoomMemberProxyProtocol!
     nonisolated(unsafe) var senderRoomMember: RoomMemberProxyProtocol?
 
+}
+nonisolated class RoomMessageSearchProxyMock: RoomMessageSearchProxyProtocol, @unchecked Sendable {
+
+    //MARK: - loadNextResults
+
+    private let loadNextResultsCallsCountLock = NSLock()
+    private nonisolated(unsafe) var loadNextResultsUnderlyingCallsCount = 0
+    var loadNextResultsCallsCount: Int {
+        get { loadNextResultsCallsCountLock.withLock { loadNextResultsUnderlyingCallsCount } }
+        set { loadNextResultsCallsCountLock.withLock { loadNextResultsUnderlyingCallsCount = newValue } }
+    }
+    var loadNextResultsCalled: Bool {
+        return loadNextResultsCallsCount > 0
+    }
+
+    private let loadNextResultsReturnValueLock = NSLock()
+    private nonisolated(unsafe) var loadNextResultsUnderlyingReturnValue: Result<[RoomMessageSearchResult]?, RoomProxyError>!
+    var loadNextResultsReturnValue: Result<[RoomMessageSearchResult]?, RoomProxyError>! {
+        get { loadNextResultsReturnValueLock.withLock { loadNextResultsUnderlyingReturnValue } }
+        set { loadNextResultsReturnValueLock.withLock { loadNextResultsUnderlyingReturnValue = newValue } }
+    }
+    nonisolated(unsafe) var loadNextResultsClosure: (() async -> Result<[RoomMessageSearchResult]?, RoomProxyError>)?
+
+    @concurrent func loadNextResults() async -> Result<[RoomMessageSearchResult]?, RoomProxyError> {
+        loadNextResultsCallsCountLock.withLock { loadNextResultsUnderlyingCallsCount += 1 }
+        if let loadNextResultsClosure = loadNextResultsClosure {
+            return await loadNextResultsClosure()
+        } else {
+            return loadNextResultsReturnValue
+        }
+    }
 }
 nonisolated class RoomNotificationSettingsProxyMock: RoomNotificationSettingsProxyProtocol, @unchecked Sendable {
     var mode: RoomNotificationModeProxy {

@@ -20,6 +20,10 @@ nonisolated struct SessionDirectories: Hashable, Codable {
         cacheDirectory.path(percentEncoded: false)
     }
     
+    var searchIndexPath: String {
+        dataDirectory.appending(component: "matrix-sdk-search-index", directoryHint: .isDirectory).path(percentEncoded: false)
+    }
+    
     // MARK: Data Management
     
     /// Removes the directories from disk if they have been created.
