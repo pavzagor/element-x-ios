@@ -75,7 +75,7 @@ struct RoomMessageSearchScreen: View {
 
 struct RoomMessageSearchScreen_Previews: PreviewProvider, TestablePreview {
     static let emptyViewModel = RoomMessageSearchScreenViewModel(roomProxy: JoinedRoomProxyMock(.init()),
-                                                                 mediaProvider: MediaProviderMock(configuration: .init()))
+                                                                 mediaProvider: MediaProviderMock(.init()))
     
     static let resultsViewModel: RoomMessageSearchScreenViewModel = {
         let results = [
@@ -97,7 +97,7 @@ struct RoomMessageSearchScreen_Previews: PreviewProvider, TestablePreview {
         roomProxy.messageSearchProxyQueryReturnValue = searchProxy
         
         let viewModel = RoomMessageSearchScreenViewModel(roomProxy: roomProxy,
-                                                         mediaProvider: MediaProviderMock(configuration: .init()))
+                                                         mediaProvider: MediaProviderMock(.init()))
         viewModel.context.searchQuery = "release"
         return viewModel
     }()
@@ -109,7 +109,7 @@ struct RoomMessageSearchScreen_Previews: PreviewProvider, TestablePreview {
         roomProxy.messageSearchProxyQueryReturnValue = searchProxy
         
         let viewModel = RoomMessageSearchScreenViewModel(roomProxy: roomProxy,
-                                                         mediaProvider: MediaProviderMock(configuration: .init()))
+                                                         mediaProvider: MediaProviderMock(.init()))
         viewModel.context.searchQuery = "release"
         return viewModel
     }()

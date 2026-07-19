@@ -208,7 +208,7 @@ class JoinedRoomProxy: JoinedRoomProxyProtocol {
     }
     
     func messageSearchProxy(query: String) -> RoomMessageSearchProxyProtocol {
-        RoomMessageSearchProxy(iterator: room.searchMessages(query: query, numResultsPerBatch: 20),
+        RoomMessageSearchProxy(iterator: room.searchMessages(query: query),
                                ownUserID: ownUserID,
                                eventStringBuilder: eventStringBuilder)
     }

@@ -32,7 +32,7 @@ struct RoomMessageSearchScreenViewModelTests {
         roomProxy.messageSearchProxyQueryReturnValue = searchProxy
         
         return RoomMessageSearchScreenViewModel(roomProxy: roomProxy,
-                                                mediaProvider: MediaProviderMock(configuration: .init()))
+                                                mediaProvider: MediaProviderMock(.init()))
     }
     
     @Test
@@ -89,7 +89,7 @@ struct RoomMessageSearchScreenViewModelTests {
         roomProxy.messageSearchProxyQueryReturnValue = searchProxy
         
         viewModel = RoomMessageSearchScreenViewModel(roomProxy: roomProxy,
-                                                     mediaProvider: MediaProviderMock(configuration: .init()))
+                                                     mediaProvider: MediaProviderMock(.init()))
         context = viewModel.context
         
         var deferred = deferFulfillment(context.observe(\.viewState)) { $0.results.count == 1 }
@@ -120,7 +120,7 @@ struct RoomMessageSearchScreenViewModelTests {
         }
         
         viewModel = RoomMessageSearchScreenViewModel(roomProxy: roomProxy,
-                                                     mediaProvider: MediaProviderMock(configuration: .init()))
+                                                     mediaProvider: MediaProviderMock(.init()))
         context = viewModel.context
         
         var deferred = deferFulfillment(context.observe(\.viewState)) { $0.hasError && !$0.isLoading }
@@ -151,7 +151,7 @@ struct RoomMessageSearchScreenViewModelTests {
         }
         
         viewModel = RoomMessageSearchScreenViewModel(roomProxy: roomProxy,
-                                                     mediaProvider: MediaProviderMock(configuration: .init()))
+                                                     mediaProvider: MediaProviderMock(.init()))
         context = viewModel.context
         
         var deferred = deferFulfillment(context.observe(\.viewState)) { $0.isLoading }
