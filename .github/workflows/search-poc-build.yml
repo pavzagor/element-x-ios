@@ -2,6 +2,12 @@ name: Search POC Build
 
 on:
   workflow_dispatch:
+    inputs:
+      record_snapshots:
+        description: Record missing or changed preview snapshots
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -20,10 +26,25 @@ jobs:
       - name: Setup environment
         run: source ci_scripts/ci_common.sh && setup_github_actions_environment
 
+      - name: Record preview snapshots
+        if: ${{ inputs.record_snapshots }}
+        run: swift run -q tools ci preview-tests --record
+
+      - name: Upload recorded snapshots
+        if: ${{ inputs.record_snapshots }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: SearchPOC-Recorded-Snapshots
+          path: PreviewTests/Sources/__Snapshots__/PreviewTests
+          retention-days: 7
+          if-no-files-found: error
+
       - name: Run unit and preview tests
+        if: ${{ !inputs.record_snapshots }}
         run: swift run -q tools ci unit-tests
 
       - name: Build simulator app
+        if: ${{ !inputs.record_snapshots }}
         run: |
           set -o pipefail
           xcodebuild \
@@ -37,12 +58,14 @@ jobs:
             build
 
       - name: Package simulator app
+        if: ${{ !inputs.record_snapshots }}
         run: |
           ditto -c -k --sequesterRsrc --keepParent \
             build/DerivedData/Build/Products/Debug-iphonesimulator/ElementX.app \
             ElementXSearch-Simulator.zip
 
       - name: Upload simulator app
+        if: ${{ !inputs.record_snapshots }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ElementXSearch-Simulator

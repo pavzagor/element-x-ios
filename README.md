@@ -10,6 +10,10 @@
 
 Element X iOS is the next-generation [Matrix](https://matrix.org/) client provided by [Element](https://element.io/).
 
+## Room message search fork
+
+This branch adds SDK-backed per-room message search and a parallel-installable `Element X Search` app. See [the installation and testing guide](docs/INSTALL_SEARCH_POC.md) for the supported simulator, Personal Team, and TestFlight paths.
+
 Compared to the previous-generation [Element Classic](https://github.com/element-hq/element-ios), it is a total rewrite using the [Matrix Rust SDK](https://github.com/matrix-org/matrix-rust-sdk) underneath and targeting devices running iOS 18+.
 
 ## Rust SDK

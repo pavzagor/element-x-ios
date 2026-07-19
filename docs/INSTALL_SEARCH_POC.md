@@ -2,6 +2,8 @@
 
 This fork is parallel-installable with App Store Element. Its bundle identifier is `com.pavzagor.elementxsearch`, display name is `Element X Search`, and shared container is `group.com.pavzagor.elementxsearch`.
 
+It pins [`pavzagor/matrix-rust-components-swift` version `26.7.19-pz.1`](https://github.com/pavzagor/matrix-rust-components-swift/releases/tag/26.7.19-pz.1), built from [`pavzagor/matrix-rust-sdk` commit `ada99ee`](https://github.com/pavzagor/matrix-rust-sdk/commit/ada99eedeca0b00e12275c9f8ff33480c628c820). Do not switch the package back to Element’s `26.7.15`; that release does not expose the per-room Swift search API used by this app.
+
 ## What the Personal Team build deliberately removes
 
 The Personal Team build keeps App Groups and Keychain Sharing. Apple currently supports both for free Apple Developer accounts.
